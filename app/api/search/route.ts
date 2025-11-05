@@ -33,33 +33,53 @@ function scoreMatch(query: string, text: string): number {
 }
 
 export async function POST(request: NextRequest) {
-	const { query } = await request.json();
+	try {
+		const { query } = await request.json();
 
-	const trimmedQuery = query.trim();
+		if (!query || typeof query !== "string" || query.trim() === "") {
+			return NextResponse.json(
+				{ error: "Query is required and must be a non-empty string" },
+				{ status: 400 }
+			);
+		}
 
-	const faqsWithScore = faqs.map((faq: FAQ) => {
-		const combinedTitleAndBody = `${faq.title} ${faq.body}`;
-		const currentFaqScore = scoreMatch(trimmedQuery, combinedTitleAndBody);
-		const faqWithScore: FAQWithScore = { ...faq, score: currentFaqScore };
-		return faqWithScore;
-	});
+		const trimmedQuery = query.trim();
 
-	const relevantFaqs = faqsWithScore.filter(
-		(faq: FAQWithScore) => faq.score > 0
-	);
+		const faqsWithScore = faqs.map((faq: FAQ) => {
+			const combinedTitleAndBody = `${faq.title} ${faq.body}`;
+			const currentFaqScore = scoreMatch(
+				trimmedQuery,
+				combinedTitleAndBody
+			);
+			const faqWithScore: FAQWithScore = {
+				...faq,
+				score: currentFaqScore,
+			};
+			return faqWithScore;
+		});
 
-	const sortedFaqs = relevantFaqs.sort(
-		(faqA: FAQWithScore, faqB: FAQWithScore) => faqB.score - faqA.score
-	);
+		const relevantFaqs = faqsWithScore.filter(
+			(faq: FAQWithScore) => faq.score > 0
+		);
 
-	const topFaqs = sortedFaqs.slice(0, 3);
+		const sortedFaqs = relevantFaqs.sort(
+			(faqA: FAQWithScore, faqB: FAQWithScore) => faqB.score - faqA.score
+		);
 
-	const results = topFaqs.map((faq) => {
-		const { score, ...rest } = faq;
-		return rest;
-	});
+		const topFaqs = sortedFaqs.slice(0, 3);
 
-	return NextResponse.json({
-		results,
-	});
+		const results = topFaqs.map((faq) => {
+			const { score, ...rest } = faq;
+			return rest;
+		});
+
+		return NextResponse.json({
+			results,
+		});
+	} catch (error) {
+		return NextResponse.json(
+			{ error: `Invalid JSON or server error` },
+			{ status: 400 }
+		);
+	}
 }
