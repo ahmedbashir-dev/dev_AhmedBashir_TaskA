@@ -11,6 +11,6 @@ export interface FAQWithScore extends FAQ {
 export interface SearchResponse {
 	results: FAQ[];
 	summary: string;
-	sources: number[];
+	sources: string[];
 	message?: string;
 }

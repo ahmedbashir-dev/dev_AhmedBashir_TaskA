@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { FAQ, FAQWithScore } from "@/app/types";
+import { FAQ, FAQWithScore, SearchResponse } from "@/app/types";
 import { getFAQs } from "@/app/lib/db";
-import { getScoredFAQ } from "@/app/utils/search";
+import { generateSummary, getScoredFAQ } from "@/app/utils/search";
 
 const MAX_RESULTS = 3;
 
@@ -38,8 +38,18 @@ export async function POST(request: NextRequest) {
 			return rest;
 		});
 
-		return NextResponse.json({
+		const ids = results.map((result) => result.id);
+		const summary = generateSummary(results, trimmedQuery);
+
+		const response: SearchResponse = {
 			results,
+			summary,
+			sources: ids,
+			...(results.length === 0 && { message: "No matches found." }),
+		};
+
+		return NextResponse.json({
+			response,
 		});
 	} catch (error) {
 		return NextResponse.json(
