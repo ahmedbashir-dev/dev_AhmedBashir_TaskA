@@ -16,7 +16,7 @@ A minimal search interface that queries a local JSON dataset via a POST request 
 
 1. Clone the repo
 ```
-git clone [https://github.com/ahmedbashir-dev/dev_AhmedBashir_TaskA](https://github.com/ahmedbashir-dev/dev_AhmedBashir_TaskA.git)
+git clone https://github.com/ahmedbashir-dev/dev_AhmedBashir_TaskA.git
 ```
 2. Install Dependencies
 ```
