@@ -14,3 +14,10 @@ export interface SearchResponse {
 	sources: string[];
 	message?: string;
 }
+
+export interface ApiResponse {
+	results: FAQ[];
+	summary: string;
+	sources: string[];
+	message?: string;
+}

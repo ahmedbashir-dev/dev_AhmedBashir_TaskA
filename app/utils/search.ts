@@ -35,3 +35,7 @@ export function generateSummary(results: FAQ[], query: string): string {
 
 	return sentences;
 }
+
+export function truncate(text: string, max = 120) {
+	return text.length > max ? text.slice(0, max) + "..." : text;
+}

@@ -49,7 +49,7 @@ export async function POST(request: NextRequest) {
 		};
 
 		return NextResponse.json({
-			response,
+			...response,
 		});
 	} catch (error) {
 		return NextResponse.json(
