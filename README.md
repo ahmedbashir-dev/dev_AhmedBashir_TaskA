@@ -12,15 +12,53 @@ A minimal search interface that queries a local JSON dataset via a POST request 
 -   Loading, empty, and error states
 -   Bonus: Summary + source IDs
 
-## Setup
+## Setup Instructions
 
-```bash
-Clone & Install
+1. Clone the repo
+```
+git clone [https://github.com/ahmedbashir-dev/dev_AhmedBashir_TaskA](https://github.com/ahmedbashir-dev/dev_AhmedBashir_TaskA.git)
+```
+2. Install Dependencies
+```
 npm install
+```
+3. Run the development server
+```
 npm run dev
 ```
 
+
 Open http://localhost:3000
+
+## Project Structure
+```
+├── app
+│   ├── api
+│   │   └── search
+│   │       └── route.ts
+│   ├── components
+│   │   └── SearchForm.tsx
+│   ├── lib
+│   │   └── db.ts
+│   ├── types
+│   │   └── index.ts
+│   ├── utils
+│   │   └── search.ts
+│   ├── globals.css
+│   ├── layout.tsx
+│   └── page.tsx
+├── data
+│   └── faqs.json
+├── public
+├── .gitignore
+├── README.md
+├── eslint.config.mjs
+├── next.config.ts
+├── package-lock.json
+├── package.json
+├── postcss.config.mjs
+└── tsconfig.json
+```
 
 ## API Endpoint
 
