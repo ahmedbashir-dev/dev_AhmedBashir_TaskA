@@ -40,6 +40,7 @@ export default function SearchForm() {
 			else setError("An unknown error occurred");
 		} finally {
 			setLoading(false);
+			setQuery("");
 		}
 	}
 

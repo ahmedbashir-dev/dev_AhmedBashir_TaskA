@@ -1,36 +1,94 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Mini Search Full-Stack App
 
-## Getting Started
+A minimal search interface that queries a local JSON dataset via a POST request to `/api/search` endpoint.
 
-First, run the development server:
+## Features
+
+-   Next.js 16 (App Router)
+-   TypeScript
+-   Local `faqs.json` dataset
+-   Keyword-based relevance scoring
+-   Top 3 results with title + snippet
+-   Loading, empty, and error states
+-   Bonus: Summary + source IDs
+
+## Setup
 
 ```bash
+Clone & Install
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open http://localhost:3000
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## API Endpoint
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### POST `/api/search`
 
-## Learn More
+This endpoint accepts a search query string and returns the most relevant FAQ entries from a local dataset.
+It computes similarity scores using a custom text matching algorithm, sorts results by relevance, and optionally includes a short combined summary of top results.
 
-To learn more about Next.js, take a look at the following resources:
+### Request Body
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+| Field   | Type     | Required | Description                                          |
+| ------- | -------- | -------- | ---------------------------------------------------- |
+| `query` | `string` | true     | The user’s search input. Must be a non-empty string. |
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+**Example Request Payload**
 
-## Deploy on Vercel
+```json
+{
+	"query": "trust"
+}
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Response
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+**200 OK**
+
+Returns the top 3 most relevant FAQ entries, a generated summary, and a list of source IDs.
+| Field | Type | Description |
+| --------- | --------------------- | ------------------------------------------------------------------------------------ |
+| `results` | `Array<FAQ>` | List of the top matching FAQ objects. |
+| `summary` | `string` | A 2–3 sentence combined summary of the top results |
+| `sources` | `string[]` | IDs of the FAQs included in the response. |
+| `message` | `string` _(optional)_ | Returned only if no matches are found. |
+
+**Example Response**
+
+```json
+{
+	"results": [
+		{
+			"id": "1",
+			"title": "Trust badges near CTA",
+			"body": "Adding trust badges near the primary CTA increased signups by 12%."
+		},
+		{
+			"id": "2",
+			"title": "Above-the-fold form",
+			"body": "Visible form above the fold lifted lead submissions by 9%."
+		},
+		{
+			"id": "3",
+			"title": "Qualifying question",
+			"body": "A single qualifying question improved demo attendance by 6%."
+		}
+	],
+	"summary": "Adding trust badges near the primary CTA increased signups by 12%.. Visible form above the fold lifted lead submissions by 9%..",
+	"sources": ["1", "2", "3"]
+}
+```
+
+**400 Bad Request**
+
+Returned when the request JSON is invalid or the `query` is empty.
+
+**Example**
+
+```json
+{
+	"error": "Query is required and must be a non-empty string"
+}
+```
